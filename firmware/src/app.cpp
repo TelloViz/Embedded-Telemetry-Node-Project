@@ -11,10 +11,11 @@
 // Default telemetry period can be set from PlatformIO build flags:
 // -D TELEMETRY_DEFAULT_PERIOD_MS=200
 #ifndef TELEMETRY_DEFAULT_PERIOD_MS
-#define TELEMETRY_DEFAULT_PERIOD_MS 200
+#define TELEMETRY_DEFAULT_PERIOD_MS 1000
 #endif
 
-static const uint32_t HEARTBEAT_PERIOD_MS = 500;
+// Heartbeat LED toggle period
+static const uint32_t HEARTBEAT_PERIOD_MS = 2000;
 
 static void print_status(const app_t *app, uint32_t now_ms)
 {
@@ -24,6 +25,8 @@ static void print_status(const app_t *app, uint32_t now_ms)
     Serial.print(now_ms - app->boot_ms);
     Serial.print(" TELEMETRY_MS=");
     Serial.print(app->telemetry_period_ms);
+    Serial.print(" HEARTBEAT_MS=");
+    Serial.print(HEARTBEAT_PERIOD_MS);
     Serial.print(" FAULTS=");
     Serial.println(app->fault_count);
 }
@@ -71,7 +74,7 @@ void app_handle_command(app_t *app, const char *line)
     if (app == NULL || line == NULL)
         return;
 
-    // Skip leading whitespace (optional, helps if host sends " LED ON")
+    // Skip leading whitespace (helps if host sends " LED ON")
     while (*line == ' ' || *line == '\t')
     {
         line++;
