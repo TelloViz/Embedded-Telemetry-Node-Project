@@ -1,5 +1,5 @@
-// hal_time.cpp
-#include "hal_time.h"
+// hal/time/hal_time.cpp
+#include "hal/time/hal_time.h"
 
 #include <Arduino.h>
 

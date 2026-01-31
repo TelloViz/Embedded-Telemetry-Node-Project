@@ -5,8 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "hal_led.h"
-#include "hal_time.h"
+#include "hal/led/hal_led.h"
+#include "hal/time/hal_time.h"
 
 // Default telemetry period can be set from PlatformIO build flags:
 // -D TELEMETRY_DEFAULT_PERIOD_MS=200

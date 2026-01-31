@@ -1,8 +1,8 @@
 // main.cpp
 #include <Arduino.h>
 #include "app.h"
-#include "hal_led.h"
-#include "hal_time.h"
+#include "hal/led/hal_led.h"
+#include "hal/time/hal_time.h"
 #include "serial_io.h"
 
 /*

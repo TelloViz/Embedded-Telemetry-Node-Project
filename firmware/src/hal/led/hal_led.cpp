@@ -1,5 +1,5 @@
-// hal_led.cpp
-#include "hal_led.h"
+// hal/led/hal_led.cpp
+#include "hal/led/hal_led.h"
 
 #include <Arduino.h>
 
