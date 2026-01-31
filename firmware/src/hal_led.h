@@ -3,14 +3,23 @@
 #include <stdbool.h>
 
 /*
-hal_led.h provides an interface for initializing and controlling an
-LED on the hardware abstraction layer (HAL). It includes functions to
-intitialize the LED hardware, set the LED state (on/off), and toggle the LED. 
+  HAL LED module
+
+  Problem this solves:
+  - Provide a small, board-agnostic API for controlling a status LED.
+  - Hide hardware specifics (GPIO pin, active-low wiring, framework calls) from app logic.
+
+  Inputs and outputs:
+  - Inputs: calls to hal_led_init(), hal_led_set(on), hal_led_toggle().
+  - Output: side effect on the physical LED.
+  - Contract: 'true' means the LED is visibly on to a user, regardless of underlying GPIO polarity.
+
+  Invariants:
+  - hal_led_init() must be called before any other hal_led_* function.
+  - All functions must be non-blocking and fast (safe to call every loop tick).
+  - hal_led_set(true/false) and hal_led_toggle() must remain consistent with the "visible LED" contract.
 */
 
 void hal_led_init(void); // Init LED hardware
 void hal_led_set(bool on); // Set LED state
 void hal_led_toggle(void); // Toggle LED state
-
-bool hal_led_get_state(void); // Get current LED state
-
