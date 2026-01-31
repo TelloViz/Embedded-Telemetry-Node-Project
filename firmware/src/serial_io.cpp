@@ -51,7 +51,7 @@ bool serial_readline(char *out, size_t out_cap)
             s_len = 0;
             return false;
         }
-        }
+    }
 
-            return false;
+    return false;
 }

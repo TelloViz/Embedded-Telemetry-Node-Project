@@ -19,8 +19,9 @@
   - All functions must be non-blocking and fast (safe to call every loop tick).
   - hal_led_set(true/false) and hal_led_toggle() must remain consistent with the "visible LED" contract.
 */
-namespace hal::led {
-void hal_led_init(void); // Init LED hardware
-void hal_led_set(bool on); // Set LED state
-void hal_led_toggle(void); // Toggle LED state
+namespace hal::led
+{
+  void hal_led_init(void);   // Init LED hardware
+  void hal_led_set(bool on); // Set LED state
+  void hal_led_toggle(void); // Toggle LED state
 } // namespace hal::led
