@@ -3,7 +3,7 @@
 #include "app.h"
 #include "hal/led/hal_led.h"
 #include "hal/time/hal_time.h"
-#include "serial_io.h"
+#include "hal/serial/serial_io.h"
 
 /*
     Main application entry point for the embedded telemetry node.
@@ -46,7 +46,7 @@ void loop()
 
     // Read one line if available (non-blocking).
     char line[96]; // Buff for incoming command
-    if (serial_readline(line, sizeof(line)))
+    if (hal::serial::serial_readline(line, sizeof(line)))
     {
         app::app_handle_command(&g_app, line); // handle command
     }

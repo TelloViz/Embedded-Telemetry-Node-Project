@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <string.h>
 
+namespace hal::serial {
 // Internal line accumulator
 // This avoids blocking while waiting for '\n'.
 static char s_line[128];
@@ -55,3 +56,4 @@ bool serial_readline(char *out, size_t out_cap)
 
     return false;
 }
+} // namesapce hal::serial
