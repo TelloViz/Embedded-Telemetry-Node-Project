@@ -21,6 +21,12 @@ venv/
 env/
 
 #----------------
+# Build artifacts
+#----------------
+build/
+dist/
+
+#----------------
 # VS Code / editors
 #----------------
 .vscode/
