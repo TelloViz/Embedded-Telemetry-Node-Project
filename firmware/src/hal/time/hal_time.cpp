@@ -3,7 +3,10 @@
 
 #include <Arduino.h>
 
-
-uint32_t hal_millis(void) {
-    return (uint32_t)millis();
-}
+namespace hal::time
+{
+    uint32_t hal_millis(void)
+    {
+        return (uint32_t)millis();
+    }
+} // namespace hal::time

@@ -49,14 +49,14 @@ void app_tick(app_t *app, uint32_t now_ms)
     // Heartbeat LED: do not block, just toggle when due.
     if (app->led_override)
     {
-        hal_led_set(app->led_override_value);
+        hal::led::hal_led_set(app->led_override_value);
     }
     else
     {
         if ((uint32_t)(now_ms - app->last_heartbeat_ms) >= HEARTBEAT_PERIOD_MS)
         {
             app->last_heartbeat_ms = now_ms;
-            hal_led_toggle();
+            hal::led::hal_led_toggle();
         }
     }
 
@@ -95,7 +95,7 @@ void app_handle_command(app_t *app, const char *line)
     if (strcmp(line, "STATUS") == 0)
     {
         Serial.print("OK ");
-        print_status(app, hal_millis());
+        print_status(app, hal::time::hal_millis());
         return;
     }
 
@@ -137,7 +137,7 @@ void app_handle_command(app_t *app, const char *line)
         {
             app->led_override = true;       // manual mode enabled
             app->led_override_value = true; // manual value
-            hal_led_set(true);
+            hal::led::hal_led_set(true);
             Serial.println("OK LED ON");
             return;
         }
@@ -146,7 +146,7 @@ void app_handle_command(app_t *app, const char *line)
         {
             app->led_override = true;        // manual mode enabled
             app->led_override_value = false; // manual value
-            hal_led_set(false);
+            hal::led::hal_led_set(false);
             Serial.println("OK LED OFF");
             return;
         }
