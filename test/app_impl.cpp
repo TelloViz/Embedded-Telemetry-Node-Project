@@ -1,3 +1,15 @@
+// ============================================================================
+// IMPORTANT: This file is kept in sync with firmware/src/app.cpp
+// 
+// PlatformIO's native test runner only compiles files in the test/ directory.
+// Since app.cpp contains the core logic we want to test, we maintain a copy
+// here for test compilation. Both files should remain identical.
+//
+// When updating firmware/src/app.cpp, copy changes to this file:
+//   copy ..\firmware\src\app.cpp app_impl.cpp
+// ============================================================================
+
+// app.cpp
 #include "app.h"
 
 #include <string.h>
@@ -211,9 +223,3 @@ namespace app
     }
 
 } // namespace app
-
-// ============================================================================
-// NOTE: A copy of this file is maintained at test/app_impl.cpp for unit test
-// compilation. When modifying this file, ensure the test copy is also updated:
-//   copy firmware/src/app.cpp test/app_impl.cpp
-// ============================================================================

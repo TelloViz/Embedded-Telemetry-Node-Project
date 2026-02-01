@@ -6,6 +6,7 @@
 #include "hal/led/hal_led.h"
 #include "hal/time/hal_time.h"
 #include "hal/serial/serial_io.h"
+#include "hal/logging/logging.h"
 
 namespace app
 {
@@ -33,9 +34,10 @@ namespace app
         hal::led::IHalLed *led;
         hal::time::IHalTime *time;
         hal::serial::ISerialIo *serial;
+        hal::logging::ILogger *logger;
     } app_t;
 
-    void app_init(app_t *app, uint32_t now_ms, hal::led::IHalLed* led, hal::time::IHalTime* time, hal::serial::ISerialIo* serial);
+    void app_init(app_t *app, uint32_t now_ms, hal::led::IHalLed* led, hal::time::IHalTime* time, hal::serial::ISerialIo* serial, hal::logging::ILogger* logger);
     void app_tick(app_t *app, uint32_t now_ms);
     void app_handle_command(app_t *app, const char *line);
 

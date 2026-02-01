@@ -4,6 +4,7 @@
 #include "hal/led/hal_led.h"
 #include "hal/time/hal_time.h"
 #include "hal/serial/serial_io.h"
+#include "hal/logging/logging.h"
 
 
 // Manual mocks for HAL interfaces
@@ -42,17 +43,39 @@ class MockHalSerial : public hal::serial::ISerialIo {
     }
 };
 
+class MockLogger : public hal::logging::ILogger {
+    public:
+    char last_log[256] = {0};
+    bool log_called = false;
+
+    void log(const char *message) override {
+        log_called = true;
+        strncpy(last_log, message, sizeof(last_log) - 1);
+        last_log[sizeof(last_log) - 1] = '\0';
+    }
+};
+
+// Unity setup/teardown hooks
+void setUp(void) {
+    // Setup code if needed
+}
+
+void tearDown(void) {
+    // Cleanup code if needed
+}
+
 void test_app_init() {
     MockHalLed mockLed;
     MockHalTime mockTime;
     MockHalSerial mockSerial;
+    MockLogger mockLogger;
     app::app_t app;
 
     mockTime.millis_value = 1000;
-    app::app_init(&app, mockTime.millis_value, &mockLed, &mockTime, &mockSerial);
+    app::app_init(&app, mockTime.millis_value, &mockLed, &mockTime, &mockSerial, &mockLogger);
 
     TEST_ASSERT_EQUAL(app::app_state_t::APP_IDLE, app.state);
-    TEST_ASSERT_TRUE(mockLed.init_called); // Assuming app_init calls hal_led_init
+    TEST_ASSERT_TRUE(mockLed.init_called);
     TEST_ASSERT_EQUAL(1000, app.boot_ms);
 }
 
@@ -60,9 +83,10 @@ void test_app_tick_led_override() {
     MockHalLed mockLed;
     MockHalTime mockTime;
     MockHalSerial mockSerial;
+    MockLogger mockLogger;
     app::app_t app;
 
-    app::app_init(&app, 1000, &mockLed, &mockTime, &mockSerial);
+    app::app_init(&app, 1000, &mockLed, &mockTime, &mockSerial, &mockLogger);
     app.led_override = true;
     app.led_override_value = true;
 
@@ -76,9 +100,10 @@ void test_app_tick_heartbeat() {
     MockHalLed mockLed;
     MockHalTime mockTime;
     MockHalSerial mockSerial;
+    MockLogger mockLogger;
     app::app_t app;
 
-    app::app_init(&app, 1000, &mockLed, &mockTime, &mockSerial);
+    app::app_init(&app, 1000, &mockLed, &mockTime, &mockSerial, &mockLogger);
     app.led_override = false;
     app.last_heartbeat_ms = 4000; // 3 seconds
 
@@ -91,9 +116,10 @@ void test_app_handle_command_led_off() {
     MockHalLed mockLed;
     MockHalTime mockTime;
     MockHalSerial mockSerial;
+    MockLogger mockLogger;
     app::app_t app;
 
-    app::app_init(&app, 1000, &mockLed, &mockTime, &mockSerial);
+    app::app_init(&app, 1000, &mockLed, &mockTime, &mockSerial, &mockLogger);
 
     app::app_handle_command(&app, "LED OFF");
 
