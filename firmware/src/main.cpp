@@ -4,6 +4,7 @@
 #include "hal/led/hal_led.h"
 #include "hal/time/hal_time.h"
 #include "hal/serial/serial_io.h"
+#include "hal/logging/serial_logger.h"
 
 /*
     Main application entry point for the embedded telemetry node.
@@ -33,10 +34,11 @@ void setup()
     static hal::led::HalLed hLed;
     static hal::time::HalTime hTime;
     static hal::serial::HalSerial hSerial;
+    static hal::logging::HalSerialLogger hLogger;
 
     hLed.hal_led_init();               // Initialize LED hardware
     uint32_t now = hTime.hal_millis(); // Get current time
-    app::app_init(&g_app, now, &hLed, &hTime, &hSerial);             // Init app state
+    app::app_init(&g_app, now, &hLed, &hTime, &hSerial, &hLogger);  // Init app state
     Serial.println("BOOT OK");
 }
 
