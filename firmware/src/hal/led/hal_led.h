@@ -21,7 +21,18 @@
 */
 namespace hal::led
 {
-  void hal_led_init(void);   // Init LED hardware
-  void hal_led_set(bool on); // Set LED state
-  void hal_led_toggle(void); // Toggle LED state
+  class IHalLed {
+    public:
+    virtual ~IHalLed() = default;
+    virtual void hal_led_init() = 0;
+    virtual void hal_led_set(bool on) = 0;
+    virtual void hal_led_toggle() = 0;
+  };
+
+  class HalLed : public IHalLed {
+  public:
+  void hal_led_init(void) override;   // Init LED hardware
+  void hal_led_set(bool on) override; // Set LED state
+  void hal_led_toggle(void) override; // Toggle LED state
+  };
 } // namespace hal::led

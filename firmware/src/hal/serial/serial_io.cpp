@@ -10,7 +10,7 @@ namespace hal::serial {
 static char s_line[128];
 static size_t s_len = 0;
 
-bool serial_readline(char *out, size_t out_cap)
+bool HalSerial::serial_readline(char *out, size_t out_cap)
 {
     if (out == NULL || out_cap == 0)
         return false;
@@ -56,4 +56,13 @@ bool serial_readline(char *out, size_t out_cap)
 
     return false;
 }
-} // namesapce hal::serial
+
+void HalSerial::hal_serial_print(const char *str)
+{
+    if (str != NULL)
+    {
+        Serial.print(str);
+    }
+}
+
+} // namespace hal::serial

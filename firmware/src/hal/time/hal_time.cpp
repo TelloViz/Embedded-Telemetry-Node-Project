@@ -5,7 +5,7 @@
 
 namespace hal::time
 {
-    uint32_t hal_millis(void)
+    uint32_t HalTime::hal_millis(void)
     {
         return (uint32_t)millis();
     }

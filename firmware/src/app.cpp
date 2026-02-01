@@ -7,7 +7,7 @@
 
 #include "hal/led/hal_led.h"
 #include "hal/time/hal_time.h"
-
+#include "hal/serial/serial_io.h"
 // Default telemetry period can be set from PlatformIO build flags:
 // -D TELEMETRY_DEFAULT_PERIOD_MS=200
 #ifndef TELEMETRY_DEFAULT_PERIOD_MS
@@ -33,7 +33,7 @@ namespace app
         Serial.println(app->fault_count);
     }
 
-    void app_init(app_t *app, uint32_t now_ms)
+    void app_init(app_t *app, uint32_t now_ms, hal::led::IHalLed* led, hal::time::IHalTime* time, hal::serial::ISerialIo* serial)
     {
         memset(app, 0, sizeof(*app));
         app->state = APP_BOOT;
@@ -41,6 +41,9 @@ namespace app
         app->telemetry_period_ms = (uint32_t)TELEMETRY_DEFAULT_PERIOD_MS;
         app->last_telemetry_ms = now_ms;
         app->last_heartbeat_ms = now_ms;
+        app->led = led;
+        app->time = time;
+        app->serial = serial;
 
         // Transition immediately to IDLE
         app->state = APP_IDLE;
@@ -51,14 +54,14 @@ namespace app
         // Heartbeat LED: do not block, just toggle when due.
         if (app->led_override)
         {
-            hal::led::hal_led_set(app->led_override_value);
+            app->led->hal_led_set(app->led_override_value);
         }
         else
         {
             if ((uint32_t)(now_ms - app->last_heartbeat_ms) >= HEARTBEAT_PERIOD_MS)
             {
                 app->last_heartbeat_ms = now_ms;
-                hal::led::hal_led_toggle();
+                app->led->hal_led_toggle();
             }
         }
 
@@ -66,7 +69,7 @@ namespace app
         if ((uint32_t)(now_ms - app->last_telemetry_ms) >= app->telemetry_period_ms)
         {
             app->last_telemetry_ms = now_ms;
-            Serial.print("TEL ");
+            app->serial->hal_serial_print("TEL ");
             print_status(app, now_ms);
         }
     }
@@ -89,15 +92,15 @@ namespace app
         // HELP
         if (strcmp(line, "HELP") == 0)
         {
-            Serial.println("OK Commands: HELP STATUS LED ON|OFF|AUTO RATE <ms> ARM DISARM FAULT");
+            app->serial->hal_serial_print("OK Commands: HELP STATUS LED ON|OFF|AUTO RATE <ms> ARM DISARM FAULT");
             return;
         }
 
         // STATUS
         if (strcmp(line, "STATUS") == 0)
         {
-            Serial.print("OK ");
-            print_status(app, hal::time::hal_millis());
+            app->serial->hal_serial_print("OK ");
+            print_status(app, app->time->hal_millis());
             return;
         }
 
@@ -105,14 +108,14 @@ namespace app
         if (strcmp(line, "ARM") == 0)
         {
             app->state = APP_ARMED;
-            Serial.println("OK ARMED");
+            app->serial->hal_serial_print("OK ARMED");
             return;
         }
 
         if (strcmp(line, "DISARM") == 0)
         {
             app->state = APP_IDLE;
-            Serial.println("OK IDLE");
+            app->serial->hal_serial_print("OK IDLE");
             return;
         }
 
@@ -121,7 +124,7 @@ namespace app
         {
             app->fault_count++;
             app->state = APP_FAULT;
-            Serial.println("OK FAULT");
+            app->serial->hal_serial_print("OK FAULT");
             return;
         }
 
@@ -139,8 +142,8 @@ namespace app
             {
                 app->led_override = true;       // manual mode enabled
                 app->led_override_value = true; // manual value
-                hal::led::hal_led_set(true);
-                Serial.println("OK LED ON");
+                app->led->hal_led_set(true);
+                app->serial->hal_serial_print("OK LED ON");
                 return;
             }
 
@@ -148,19 +151,19 @@ namespace app
             {
                 app->led_override = true;        // manual mode enabled
                 app->led_override_value = false; // manual value
-                hal::led::hal_led_set(false);
-                Serial.println("OK LED OFF");
+                app->led->hal_led_set(false);
+                app->serial->hal_serial_print("OK LED OFF");
                 return;
             }
 
             if (strcmp(arg, "AUTO") == 0)
             {
                 app->led_override = false; // return control to heartbeat
-                Serial.println("OK LED AUTO");
+                app->serial->hal_serial_print("OK LED AUTO");
                 return;
             }
 
-            Serial.println("ERR LED expects ON OFF AUTO");
+            app->serial->hal_serial_print("ERR LED expects ON OFF AUTO");
             return;
         }
 
@@ -180,7 +183,7 @@ namespace app
             // Validate parse: must have at least one digit and no trailing junk
             if (end == p)
             {
-                Serial.println("ERR RATE expects an integer");
+                app->serial->hal_serial_print("ERR RATE expects an integer");
                 return;
             }
             while (*end == ' ' || *end == '\t')
@@ -189,23 +192,23 @@ namespace app
             }
             if (*end != '\0')
             {
-                Serial.println("ERR RATE expects only an integer");
+                app->serial->hal_serial_print("ERR RATE expects only an integer");
                 return;
             }
 
             // Clamp to reasonable bounds for MVP
             if (ms < 10 || ms > 60000)
             {
-                Serial.println("ERR RATE out of range (10..60000)");
+                app->serial->hal_serial_print("ERR RATE out of range (10..60000)");
                 return;
             }
 
             app->telemetry_period_ms = (uint32_t)ms;
-            Serial.println("OK RATE SET");
+            app->serial->hal_serial_print("OK RATE SET");
             return;
         }
 
-        Serial.println("ERR Unknown command");
+        app->serial->hal_serial_print("ERR Unknown command");
     }
 
 } // namespace app

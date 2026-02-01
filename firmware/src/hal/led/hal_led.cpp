@@ -13,7 +13,7 @@ namespace hal::led
     /*
      * Initialize the LED hardware.
      */
-    void hal_led_init(void)
+    void HalLed::hal_led_init(void)
     {
         pinMode(LED_BUILTIN, OUTPUT);
         s_led_on = false;
@@ -23,7 +23,7 @@ namespace hal::led
     /*
      * Set the LED state.
      */
-    void hal_led_set(bool on)
+    void HalLed::hal_led_set(bool on)
     {
         s_led_on = on;
         digitalWrite(LED_BUILTIN, on ? HIGH : LOW);
@@ -32,7 +32,7 @@ namespace hal::led
     /*
      * Toggle the LED state.
      */
-    void hal_led_toggle(void)
+    void HalLed::hal_led_toggle(void)
     {
         hal_led_set(!s_led_on);
     }

@@ -3,6 +3,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "hal/led/hal_led.h"
+#include "hal/time/hal_time.h"
+#include "hal/serial/serial_io.h"
+
 namespace app
 {
     typedef enum
@@ -24,9 +28,14 @@ namespace app
         uint32_t last_telemetry_ms;   // last telemetry time
         uint32_t boot_ms;             // boot time in ms
         uint32_t fault_count;         // number of faults occurred
+
+        // Injected HAL interfaces
+        hal::led::IHalLed *led;
+        hal::time::IHalTime *time;
+        hal::serial::ISerialIo *serial;
     } app_t;
 
-    void app_init(app_t *app, uint32_t now_ms);
+    void app_init(app_t *app, uint32_t now_ms, hal::led::IHalLed* led, hal::time::IHalTime* time, hal::serial::ISerialIo* serial);
     void app_tick(app_t *app, uint32_t now_ms);
     void app_handle_command(app_t *app, const char *line);
 
