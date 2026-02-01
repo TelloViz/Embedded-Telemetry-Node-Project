@@ -97,7 +97,7 @@ See [docs/TESTING.md](docs/Testing.md) for the complete testing strategy includi
 
 ## Design Documentation
 
-- ** [docs/TESTING.md](docs/TESTING.md)** - Testing, strategy, roadmap, and architectue decisions
+- **[docs/TESTING.md](docs/TESTING.md)** - Testing, strategy, roadmap, and architectue decisions
 - **[TESTING_QUICK_START.md](docs/TESTING_QUICK_START.md)** - Developer quick reference for running tests
 - **[docs/design.md](docs/design.md)** - High-level system design
 - **[docs/demo.md](docs/demo.md)** - Demo usage and examples
