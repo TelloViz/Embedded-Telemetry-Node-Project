@@ -4,12 +4,13 @@
 #include <Arduino.h>
 #include <string.h>
 
+namespace hal::serial {
 // Internal line accumulator
 // This avoids blocking while waiting for '\n'.
 static char s_line[128];
 static size_t s_len = 0;
 
-bool serial_readline(char *out, size_t out_cap)
+bool HalSerial::serial_readline(char *out, size_t out_cap)
 {
     if (out == NULL || out_cap == 0)
         return false;
@@ -51,7 +52,17 @@ bool serial_readline(char *out, size_t out_cap)
             s_len = 0;
             return false;
         }
-        }
+    }
 
-            return false;
+    return false;
 }
+
+void HalSerial::hal_serial_print(const char *str)
+{
+    if (str != NULL)
+    {
+        Serial.print(str);
+    }
+}
+
+} // namespace hal::serial
