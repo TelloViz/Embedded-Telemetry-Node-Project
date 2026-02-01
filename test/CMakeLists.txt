@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(EmbeddedTelemetryNodeTests)
 
 # Include directories for source and lib
+include_directories(unity/src)
 include_directories(../firmware/src)
 include_directories(../firmware/lib)
 
