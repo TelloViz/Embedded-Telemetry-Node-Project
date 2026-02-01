@@ -3,24 +3,26 @@
 #include <stdbool.h>
 
 /*
-  HAL LED module
+    HAL LED Interface
 
-  Problem this solves:
-  - Provide a small, board-agnostic API for controlling a status LED.
-  - Hide hardware specifics (GPIO pin, active-low wiring, framework calls) from app logic.
+    Responsibilities:
+    - Abstract LED hardware operations.
 
-  Inputs and outputs:
-  - Inputs: calls to hal_led_init(), hal_led_set(on), hal_led_toggle().
-  - Output: side effect on the physical LED.
-  - Contract: 'true' means the LED is visibly on to a user, regardless of underlying GPIO polarity.
-
-  Invariants:
-  - hal_led_init() must be called before any other hal_led_* function.
-  - All functions must be non-blocking and fast (safe to call every loop tick).
-  - hal_led_set(true/false) and hal_led_toggle() must remain consistent with the "visible LED" contract.
+    Invariants:
+    - hal_led_init() must be called before other methods.
+    - hal_led_set() and hal_led_toggle() must be non-blocking.
 */
 namespace hal::led
 {
+  /*
+    IHalLed Interface
+
+    Responsibilities:
+    - Define LED hardware abstraction methods.
+
+    Invariants:
+    - Implementations must provide concrete behavior for all methods.
+  */
   class IHalLed {
     public:
     virtual ~IHalLed() = default;
@@ -29,7 +31,17 @@ namespace hal::led
     virtual void hal_led_toggle() = 0;
   };
 
-  class HalLed : public IHalLed {
+
+  /*
+    HalLedPico Implementation
+
+    Responsibilities:
+    - Provide concrete LED hardware operations for Raspberry Pi Pico.
+
+    Invariants:
+    - Must implement all IHalLed methods.
+  */
+  class HalLedPico : public IHalLed {
   public:
   void hal_led_init(void) override;   // Init LED hardware
   void hal_led_set(bool on) override; // Set LED state

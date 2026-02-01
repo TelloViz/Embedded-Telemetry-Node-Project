@@ -31,7 +31,7 @@ void setup()
 {
     Serial.begin(115200);                   // Initialize serial communication
 
-    static hal::led::HalLed hLed;
+    static hal::led::HalLedPico hLed;
     static hal::time::HalTime hTime;
     static hal::serial::HalSerial hSerial;
     static hal::logging::HalSerialLogger hLogger;
